@@ -1,11 +1,13 @@
 <script setup>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import Map from './components/Map.vue'
+import Map from "./components/Map.vue";
 </script>
 
 <template>
-  <Map/>
+  <main class="w-screen h-screen flex justify-center">
+    <Map />
+  </main>
 </template>
 
 <style>
@@ -13,10 +15,5 @@ import Map from './components/Map.vue'
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
 }
 </style>

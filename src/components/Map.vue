@@ -1,11 +1,17 @@
 <script>
 import { onMounted } from "vue";
-import mapRender from '../controller/MapRender.js'
-
+import { mapRender } from "../controller/MapRender.js";
+import global from "../controller/Global.js";
+import { select } from "d3";
 
 export default {
   setup() {
-    onMounted(() => mapRender());
+    const methods = global.methods;
+    onMounted(() => {
+      const mapHolder = select("#map-holder svg");
+      mapRender(mapHolder);
+      methods.renderTreeData(mapHolder);
+    });
   },
 };
 </script>
