@@ -1,62 +1,62 @@
+import mapboxgl from 'mapbox-gl';
 import * as d3 from 'd3';
-import * as topojson from 'topojson-client';
-import * as mapData from '../assets/nyc_tracts2020_clipped.json';
+import { geoMercator } from 'd3';
 
-const mapGlobals = {
-  getMap() {
-    let map = topojson.feature(mapData, {
-      type: 'GeometryCollection',
-      geometries: mapData.objects.nyc_tracts2020_clipped.geometries,
-    });
-    return map;
-  },
-  getProjection() {
-    let projection = d3.geoMercator().fitExtent(
-      [
-        [0, 0],
-        [550, 550],
-      ],
-      this.getMap()
-    );
-    return projection;
-  },
-};
-export const mapRender = (mapHolder) => {
-  const width = 550,
-    height = 550;
+export const mapGlobals = {};
 
-  const geoPath = d3.geoPath().projection(mapGlobals.getProjection());
-
-
-  mapHolder
-    .attr('viewBox', `0 0 ${width} ${height}`)
-    .append('g')
-    .attr('class', 'map')
-    .selectAll('path')
-    .data(mapGlobals.getMap().features)
-    .enter()
-    .append('path')
-    .attr('d', geoPath)
-    .attr('stroke-width', 0.2)
-    .attr('stroke', 'white')
-    .attr('fill', 'coral');
+export const mapBoxRender = () => {
+  mapboxgl.accessToken =
+    'pk.eyJ1Ijoicmd1dHRlcnNvaG4iLCJhIjoiY2s4bnBkMGcwMHd0bzNmbjJucWJ2djlqMSJ9.kxpUifvDwI9fG2YQD5THLQ';
+    
+  const map = new mapboxgl.Map({
+    container: 'map-holder', // container ID
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-73.935242, 40.73061], // starting position [lng, lat]
+    zoom: 10, // starting zoom
+  });
+  Object.assign(mapGlobals, {map: map})
 };
 
-export const plotPointerRender = (mapHolder, data) => {
-  const projection = mapGlobals.getProjection();
-  mapHolder.append('g')
-  .attr('class', 'plot-points')
-  .selectAll('circle')
-  .data(data)
-  .enter()
-  .append('circle')
-  .attr('transform', ({longitude, latitude}) => {
-    const p = projection([longitude, latitude]);
-    return `translate(${p[0]}, ${p[1]})`
+export function plotPointRender(data) {
+  let canvas = mapGlobals.map.getContainer();
+  let svg = d3.select(canvas).append("svg");
+  let transform = d3.geoTransform({
+    point(lon, lat){
+      var point = map.project(new mapboxgl.LngLat(lon, lat));
+			this.stream.point(point.x, point.y);
+    }
   })
-  .attr('r', '1px')
-  .style('fill', 'red')
-  .attr('stroke', 'white')
-  .attr('stroke-width', 0.1)
-  .on('click', (event,d) => console.log(d.address))
-};
+
+  let projection = geoMercator()
+  
+  svg
+    .selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+    .attr('transform', d=>{
+      let coordinates = [parseFloat(d.longitude), parseFloat(d.latitude)];
+      return `translate(${projection(coordinates[0])},${projection(coordinates[1])})`
+    })
+  //   .attr('d', path)
+  //   .on('mousemove', function (d) {
+  //     var mouse = d3.mouse(svg.node()).map(function (d) {
+  //       return parseInt(d);
+  //     });
+  //     tooltip
+  //       .classed('hidden', false)
+  //       .attr(
+  //         'style',
+  //         'left:' + (mouse[0] + 15) + 'px; top:' + (mouse[1] - 35) + 'px'
+  //       )
+  //       .html(d.properties.routes_r_1);
+  //   })
+  //   .on('mouseout', function () {
+  //     tooltip.classed('hidden', true);
+  //   });
+  // update(500);
+
+  // map.on('viewreset', update);
+  // map.on('move', update);
+  // map.on('moveend', update);
+}

@@ -5,7 +5,7 @@ import Map from "./components/Map.vue";
 </script>
 
 <template>
-  <main class="w-screen h-screen flex justify-center">
+  <main>
     <Map />
   </main>
 </template>
