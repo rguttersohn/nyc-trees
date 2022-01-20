@@ -27,17 +27,23 @@ export function plotPointRender(data) {
     }
   })
 
+  let width = 1068;
+  let height = 384;
+
   let projection = geoMercator()
   
   svg
+    .attr('width', 1068)
+    .attr('height', 384)
     .selectAll('circle')
     .data(data)
     .enter()
     .append('circle')
-    .attr('transform', d=>{
-      let coordinates = [parseFloat(d.longitude), parseFloat(d.latitude)];
-      return `translate(${projection(coordinates[0])},${projection(coordinates[1])})`
+    .attr('transform', ({longitude, latitude})=>{
+      let p = projection([longitude, latitude]);
+      return `translate(${p[0]},${p[1]})`
     })
+    .attr('r', 10)
   //   .attr('d', path)
   //   .on('mousemove', function (d) {
   //     var mouse = d3.mouse(svg.node()).map(function (d) {
