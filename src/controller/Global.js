@@ -1,11 +1,10 @@
-import { tree, treemapResquarify } from "d3";
 import { reactive, readonly } from "vue";
-import { mapBoxRender, plotPointRender } from "./MapRender";
+import { plotPointRender } from "./MapRender";
 
 const state = reactive({
-    treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.json?$limit=300',
-    treeData:{}
-
+    treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.json?$limit=100',
+    treeData:{},
+    activeTree:{},
 })
 
 const methods = {

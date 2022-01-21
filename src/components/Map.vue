@@ -1,7 +1,7 @@
 <script>
 import { onMounted } from "vue";
 import global from "../controller/Global.js";
-import { mapBoxRender, mapGlobals, plotPointRender } from "../controller/MapRender.js";
+import { mapBoxRender } from "../controller/MapRender.js";
 
 
 export default {
@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-    <div class="w-screen h-96" id="map-holder"></div>
+    <div class="w-screen h-screen relative" id="map-holder"></div>
 </template>
 
 

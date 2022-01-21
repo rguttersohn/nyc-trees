@@ -1,8 +1,7 @@
 import mapboxgl from 'mapbox-gl';
 import * as d3 from 'd3';
-import { geoMercator } from 'd3';
 
-export const mapGlobals = {};
+const mapGlobals = {};
 
 export const mapBoxRender = () => {
   mapboxgl.accessToken =
@@ -10,7 +9,7 @@ export const mapBoxRender = () => {
     
   const map = new mapboxgl.Map({
     container: 'map-holder', // container ID
-    style: 'mapbox://styles/mapbox/streets-v11',
+    style: 'mapbox://styles/mapbox/streets-v11?optimize=true',
     center: [-73.935242, 40.73061], // starting position [lng, lat]
     zoom: 10, // starting zoom
   });
@@ -18,51 +17,38 @@ export const mapBoxRender = () => {
 };
 
 export function plotPointRender(data) {
-  let canvas = mapGlobals.map.getContainer();
-  let svg = d3.select(canvas).append("svg");
-  let transform = d3.geoTransform({
-    point(lon, lat){
-      var point = map.project(new mapboxgl.LngLat(lon, lat));
-			this.stream.point(point.x, point.y);
-    }
-  })
-
-  let width = 1068;
-  let height = 384;
-
-  let projection = geoMercator()
+  let canvas = mapGlobals.map.getCanvasContainer();
   
-  svg
-    .attr('width', 1068)
-    .attr('height', 384)
+  const projection = (d) => mapGlobals.map.project(new mapboxgl.LngLat(d.longitude, d.latitude));
+  
+  const position = ()=>{
+    d3.selectAll('.circles circle')
+    .attr("cx", (d) => projection(d).x)
+    .attr("cy", (d) => projection(d).y)
+  } 
+  let plotPoints = d3.select(canvas)
+    .append('svg')
+    .style('height', '100%')
+    .style('width', '100%')
+    .style('position', 'absolute')
+    .style('z-index', 2)
+    .append('g')
+    .attr('class', 'circles')
     .selectAll('circle')
     .data(data)
     .enter()
     .append('circle')
-    .attr('transform', ({longitude, latitude})=>{
-      let p = projection([longitude, latitude]);
-      return `translate(${p[0]},${p[1]})`
+    .attr('r', 3)
+    .attr('fill', 'green')
+    .style('cursor', 'pointer')
+    .on('click', (event, d) => {
+        console.log(d)
     })
-    .attr('r', 10)
-  //   .attr('d', path)
-  //   .on('mousemove', function (d) {
-  //     var mouse = d3.mouse(svg.node()).map(function (d) {
-  //       return parseInt(d);
-  //     });
-  //     tooltip
-  //       .classed('hidden', false)
-  //       .attr(
-  //         'style',
-  //         'left:' + (mouse[0] + 15) + 'px; top:' + (mouse[1] - 35) + 'px'
-  //       )
-  //       .html(d.properties.routes_r_1);
-  //   })
-  //   .on('mouseout', function () {
-  //     tooltip.classed('hidden', true);
-  //   });
-  // update(500);
+    position()
 
-  // map.on('viewreset', update);
-  // map.on('move', update);
-  // map.on('moveend', update);
+      mapGlobals.map.on("viewreset", position);
+      mapGlobals.map.on("move", position);
+      mapGlobals.map.on("moveend", position);
+      position(plotPoints); 
+  
 }
