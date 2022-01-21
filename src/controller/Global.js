@@ -1,9 +1,9 @@
 import { reactive, readonly } from "vue";
-import { plotPointRender } from "./MapRender";
+import mapBoxRender from './MapRender.js'
+
 
 const state = reactive({
-    treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.json?$limit=100',
-    treeData:{},
+    treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$limit=5000',
     activeTree:{},
 })
 
@@ -13,10 +13,14 @@ const methods = {
             method: 'GET'
         })
         .then(response=> response.json())
-        .then(data => {
-            console.log('data loaded')
-            state.treeData = data 
-            plotPointRender(state.treeData)
+        .then(treeData => {
+            
+            treeData.features.forEach(d => {
+                d.geometry = {type: 'Point', 'coordinates' : []}
+                d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude))
+            });
+            console.log(treeData);
+            mapBoxRender(treeData)
         })
         .catch(error => console.error(error));  
     },

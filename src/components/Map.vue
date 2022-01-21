@@ -1,15 +1,14 @@
 <script>
 import { onMounted } from "vue";
-import global from "../controller/Global.js";
-import { mapBoxRender } from "../controller/MapRender.js";
+import global from '../controller/Global.js';
+
 
 
 export default {
   setup() {
-    const methods = global.methods;
+    const { renderTreeData } = global.methods
     onMounted(() => {
-      mapBoxRender();
-      methods.renderTreeData()
+      renderTreeData();
     });
   },
 };
