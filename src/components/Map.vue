@@ -1,12 +1,9 @@
 <script>
-import { onMounted } from "vue";
-import global from '../controller/Global.js';
-
+import { onMounted } from 'vue';
 
 
 export default {
   setup() {
-    const { renderTreeData } = global.methods
     onMounted(() => {
       renderTreeData();
     });
@@ -15,7 +12,5 @@ export default {
 </script>
 
 <template>
-    <div class="w-screen h-screen relative" id="map-holder"></div>
+  <div :class="{'w-full' : !$store.sideBarActive, 'w-3/4' : $store.sideBarActive}"  class="h-full" id="map-holder"></div>
 </template>
-
-

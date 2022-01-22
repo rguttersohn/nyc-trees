@@ -15,6 +15,7 @@ const mapBoxRender = (data) => {
     map.addSource('trees', {
       type: 'geojson',
       data: data,
+
     })
 
     map.addLayer({
@@ -26,6 +27,21 @@ const mapBoxRender = (data) => {
         'circle-color': '#0099cd'
       }
     })  
+  })
+
+  map.on('click', (event)=>{
+    const features = map.queryRenderedFeatures(event.point, {
+      layers: ['trees'] // replace with your layer name
+    });
+
+    if (!features.length) {
+      return;
+    }
+
+    state.activeTree = features[0].properties;
+    state.sideBarActive = !state.sideBarActive;
+    console.log(state.sideBarActive);
+
   })
   
 };
