@@ -3,7 +3,7 @@ import { createStore } from 'vuex';
 const store = createStore({
     state(){
         return {
-            treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$limit=500',
+            treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$limit=50000',
             treeData:{},
             activeTree:{},
             sideBarActive: false,

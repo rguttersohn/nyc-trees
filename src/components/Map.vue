@@ -25,6 +25,7 @@ export default {
     // hooks
     onMounted(() => renderMap(mapGlobals.value));
     watch(treeData, () => {
+      console.log(treeData.value);
       renderPlotPoints(treeData.value, mapGlobals.value);
       addMapClick({
         mapGlobals: mapGlobals.value, 
