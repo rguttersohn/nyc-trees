@@ -1,37 +1,24 @@
 import { createStore } from 'vuex';
 
-
 const store = createStore({
     state(){
         return {
-            treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$limit=100',
+            treesURL:'https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$limit=50000',
             treeData:{},
             activeTree:{},
             sideBarActive: false,
         }
     },
     mutations: {
-        setTreeData(state){
-            fetch(state.treesURL, {
-                method: 'GET'
-            })
-            .then(response=> response.json())
-            .then(treeData => {
-                
-                treeData.features.forEach(d => {
-                    d.geometry = {type: 'Point', 'coordinates' : []}
-                    d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude))
-                });
-                state.treeData = treeData;
-            })
-            .catch(error => console.error(error));  
+        setTreeData(state, data){
+            state.treeData = data
         },
         toggleSideBar(state){
             state.sideBarActive = !state.sideBarActive;
         }
     },
     actions:{
-        getTreeData (){
+        getTreeData ({state, commit}){
             fetch(state.treesURL, {
                 method: 'GET'
             })
@@ -41,7 +28,7 @@ const store = createStore({
                     d.geometry = {type: 'Point', 'coordinates' : []}
                     d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude))
                 });
-                // commit setTreeData mutation here
+                commit('setTreeData', treeData);                
             })
             .catch(error => console.error(error));
         }

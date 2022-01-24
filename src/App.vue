@@ -1,13 +1,31 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import TestStore from './components/TestStore.vue';
+<script>
+import { useStore } from "vuex";
+import { onMounted, watch, toRefs } from "vue";
+import Map from "./components/Map.vue"
 
+export default {
+  name: "App",
+  components: {
+    Map
+  },
+  setup() {
+    const store = useStore();
+    const treeData = store.state.treeData;
+
+    onMounted(() => {
+      store.dispatch("getTreeData");
+    });
+
+    return{
+      treeData
+    }
+  },
+};
 </script>
 
 <template>
   <main class="w-screen h-screen flex">
-    <TestStore/>
+    <Map/>
   </main>
 </template>
 

@@ -1,4 +1,7 @@
 import mapboxgl from 'mapbox-gl';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const mapBoxRender = (data) => {
   mapboxgl.accessToken =
@@ -15,9 +18,7 @@ const mapBoxRender = (data) => {
     map.addSource('trees', {
       type: 'geojson',
       data: data,
-
     })
-
     map.addLayer({
       id: 'trees',
       type: 'circle',
@@ -29,20 +30,20 @@ const mapBoxRender = (data) => {
     })  
   })
 
-  map.on('click', (event)=>{
-    const features = map.queryRenderedFeatures(event.point, {
-      layers: ['trees'] // replace with your layer name
-    });
+  // map.on('click', (event)=>{
+  //   const features = map.queryRenderedFeatures(event.point, {
+  //     layers: ['trees'] // replace with your layer name
+  //   });
 
-    if (!features.length) {
-      return;
-    }
+  //   if (!features.length) {
+  //     return;
+  //   }
 
-    state.activeTree = features[0].properties;
-    state.sideBarActive = !state.sideBarActive;
-    console.log(state.sideBarActive);
+  //   state.activeTree = features[0].properties;
+  //   state.sideBarActive = !state.sideBarActive;
+  //   console.log(state.sideBarActive);
 
-  })
+  // })
   
 };
 
