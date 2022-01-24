@@ -16,6 +16,7 @@ export default {
     // mutations
     const setActiveTree = (activeTree) => store.commit('setActiveTree', activeTree);
     const toggleSideBar = () => store.commit('toggleSideBar');
+    const setSideBarTrue = () => store.commit('setSideBarTrue');
     // component data
     const mapGlobals = ref({
       map: "",
@@ -25,7 +26,11 @@ export default {
     onMounted(() => renderMap(mapGlobals.value));
     watch(treeData, () => {
       renderPlotPoints(treeData.value, mapGlobals.value);
-      addMapClick(mapGlobals.value, toggleSideBar, setActiveTree);
+      addMapClick({
+        mapGlobals: mapGlobals.value, 
+        setSideBarTrue: setSideBarTrue, 
+        toggleSideBar: toggleSideBar, 
+        setActiveTree: setActiveTree});
     });
     
     return{

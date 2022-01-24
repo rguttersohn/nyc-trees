@@ -36,32 +36,24 @@ export const renderPlotPoints  = (data, mapGlobals) => {
 }
 
 
-export const addMapClick = (mapGlobals, toggleSideBar, setActiveTree)=>{
+export const addMapClick = ({mapGlobals, setSideBarTrue, toggleSideBar, setActiveTree} = {})=>{
     mapGlobals.map.on('load', ()=>{
       mapGlobals.map.on('click', (event)=>{    
         const features = mapGlobals.map.queryRenderedFeatures(event.point, {
-          layers: ['trees'] // replace with your layer name
+          layers: ['trees'] 
         });
     
         if (!features.length) {
           return;
         }
-
         if(features[0].properties.tree_id !== mapGlobals.lastTreeID){
             setActiveTree(features[0].properties);
-            toggleSideBar();
+            setSideBarTrue();
             mapGlobals.lastTreeID = features[0].properties.tree_id
+        } else{
+            toggleSideBar();
         }
-        
-        
-       
-        
-       
     })
-    
-    
-    
-
   })
 }
 
