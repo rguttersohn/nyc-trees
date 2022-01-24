@@ -1,9 +1,8 @@
 import mapboxgl from 'mapbox-gl';
-import { useStore } from 'vuex';
 
-const store = useStore();
 
-const mapBoxRender = (data) => {
+
+export const renderMap = (mapGlobals) => {
   mapboxgl.accessToken =
     'pk.eyJ1Ijoicmd1dHRlcnNvaG4iLCJhIjoiY2s4bnBkMGcwMHd0bzNmbjJucWJ2djlqMSJ9.kxpUifvDwI9fG2YQD5THLQ';
     
@@ -13,13 +12,18 @@ const mapBoxRender = (data) => {
     center: [-73.935242, 40.73061], // starting position [lng, lat]
     zoom: 10, // starting zoom
   });
+  mapGlobals.map = map;
+};
 
-  map.on('load', () => {
-    map.addSource('trees', {
+export const renderPlotPoints  = (data, mapGlobals) => {
+  
+    mapGlobals.map.on('load', () => {
+    mapGlobals.loaded = true;
+    mapGlobals.map.addSource('trees', {
       type: 'geojson',
       data: data,
     })
-    map.addLayer({
+    mapGlobals.map.addLayer({
       id: 'trees',
       type: 'circle',
       source: 'trees',
@@ -29,6 +33,8 @@ const mapBoxRender = (data) => {
       }
     })  
   })
+}
+
 
   // map.on('click', (event)=>{
   //   const features = map.queryRenderedFeatures(event.point, {
@@ -45,9 +51,6 @@ const mapBoxRender = (data) => {
 
   // })
   
-};
-
-export default mapBoxRender;
 
 
 
