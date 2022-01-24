@@ -1,12 +1,14 @@
 <script>
 import { useStore } from "vuex";
-import { onMounted, watch, toRefs } from "vue";
+import { onMounted } from "vue";
 import Map from "./components/Map.vue"
+import SideBar from './components/SideBar.vue'
 
 export default {
   name: "App",
   components: {
-    Map
+    Map,
+    SideBar
   },
   setup() {
     const store = useStore();
@@ -26,6 +28,7 @@ export default {
 <template>
   <main class="w-screen h-screen flex">
     <Map/>
+    <SideBar />
   </main>
 </template>
 

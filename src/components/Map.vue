@@ -11,13 +11,17 @@ export default {
   name: "Map",
   setup() {
     const store = useStore();
+    // state data
     const treeData = computed(() => store.state.treeData);
+    // mutations
     const setActiveTree = (activeTree) => store.commit('setActiveTree', activeTree);
     const toggleSideBar = () => store.commit('toggleSideBar');
+    // component data
     const mapGlobals = ref({
       map: "",
       lastTreeID:0
     });
+    // hooks
     onMounted(() => renderMap(mapGlobals.value));
     watch(treeData, () => {
       renderPlotPoints(treeData.value, mapGlobals.value);

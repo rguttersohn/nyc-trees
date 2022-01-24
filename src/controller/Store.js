@@ -19,6 +19,9 @@ const store = createStore({
         setSideBarTrue(state){
             state.sideBarActive = true
         },
+        setSideBarFalse(state){
+            state.sideBarActive = false
+        },
         setActiveTree(state, activeTree){
             state.activeTree = activeTree
         }
