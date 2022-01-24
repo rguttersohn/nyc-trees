@@ -1,3 +1,4 @@
+import { map } from 'd3';
 import mapboxgl from 'mapbox-gl';
 
 
@@ -18,7 +19,6 @@ export const renderMap = (mapGlobals) => {
 export const renderPlotPoints  = (data, mapGlobals) => {
   
     mapGlobals.map.on('load', () => {
-    mapGlobals.loaded = true;
     mapGlobals.map.addSource('trees', {
       type: 'geojson',
       data: data,
@@ -28,7 +28,7 @@ export const renderPlotPoints  = (data, mapGlobals) => {
       type: 'circle',
       source: 'trees',
       paint: {
-        'circle-radius': 3,
+        'circle-radius': 10,
         'circle-color': '#0099cd'
       }
     })  
@@ -36,20 +36,36 @@ export const renderPlotPoints  = (data, mapGlobals) => {
 }
 
 
-  // map.on('click', (event)=>{
-  //   const features = map.queryRenderedFeatures(event.point, {
-  //     layers: ['trees'] // replace with your layer name
-  //   });
+export const addMapClick = (mapGlobals, toggleSideBar, setActiveTree)=>{
+    mapGlobals.map.on('load', ()=>{
+      mapGlobals.map.on('click', (event)=>{    
+        const features = mapGlobals.map.queryRenderedFeatures(event.point, {
+          layers: ['trees'] // replace with your layer name
+        });
+    
+        if (!features.length) {
+          return;
+        }
 
-  //   if (!features.length) {
-  //     return;
-  //   }
+        if(features[0].properties.tree_id !== mapGlobals.lastTreeID){
+            setActiveTree(features[0].properties);
+            toggleSideBar();
+            mapGlobals.lastTreeID = features[0].properties.tree_id
+        }
+        
+        
+       
+        
+       
+    })
+    
+    
+    
 
-  //   state.activeTree = features[0].properties;
-  //   state.sideBarActive = !state.sideBarActive;
-  //   console.log(state.sideBarActive);
+  })
+}
 
-  // })
+
   
 
 

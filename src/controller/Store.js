@@ -15,7 +15,14 @@ const store = createStore({
         },
         toggleSideBar(state){
             state.sideBarActive = !state.sideBarActive;
+        },
+        setSideBarTrue(state){
+            state.sideBarActive = true
+        },
+        setActiveTree(state, activeTree){
+            state.activeTree = activeTree
         }
+        
     },
     actions:{
         getTreeData ({state, commit}){

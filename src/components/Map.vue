@@ -1,31 +1,40 @@
 <script>
-import {renderMap, renderPlotPoints} from "../controller/MapRender";
-import { useStore } from 'vuex';
-import { computed, watch, onMounted, ref} from 'vue';
+import {
+  renderMap,
+  renderPlotPoints,
+  addMapClick,
+} from "../controller/MapRender";
+import { useStore } from "vuex";
+import { computed, watch, onMounted, ref } from "vue";
 
 export default {
   name: "Map",
-  setup(){
+  setup() {
     const store = useStore();
-    const treeData = computed(() =>store.state.treeData);
-    const sideBarActive = computed (() => store.state.sideBarActive)
-    const mapGlobals = {
-      map:'', 
-      loaded: false,
-    };
-    onMounted(() => renderMap(mapGlobals));
-    watch(treeData, ()=>{ 
-      renderPlotPoints(treeData.value, mapGlobals)
-    })
-    return {sideBarActive}
+    const treeData = computed(() => store.state.treeData);
+    const setActiveTree = (activeTree) => store.commit('setActiveTree', activeTree);
+    const toggleSideBar = () => store.commit('toggleSideBar');
+    const mapGlobals = ref({
+      map: "",
+      lastTreeID:0
+    });
+    onMounted(() => renderMap(mapGlobals.value));
+    watch(treeData, () => {
+      renderPlotPoints(treeData.value, mapGlobals.value);
+      addMapClick(mapGlobals.value, toggleSideBar, setActiveTree);
+    });
+    
+    return{
+      mapGlobals
+    }
+
   },
 };
 </script>
 
 <template>
   <div
-    :class="{ 'w-full': !sideBarActive, 'w-3/4': sideBarActive }"
-    class="h-full"
+    class="h-full w-full"
     id="map-holder"
   ></div>
 </template>
