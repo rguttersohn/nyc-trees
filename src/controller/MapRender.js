@@ -1,29 +1,27 @@
-import { map } from 'd3';
 import mapboxgl from 'mapbox-gl';
+import vault from '../../vault.js';
 
 export const renderMap = (mapGlobals) => {
-  mapboxgl.accessToken =
-    'pk.eyJ1Ijoicmd1dHRlcnNvaG4iLCJhIjoiY2s4bnBkMGcwMHd0bzNmbjJucWJ2djlqMSJ9.kxpUifvDwI9fG2YQD5THLQ';
+  mapboxgl.accessToken = vault.mapBoxToken;
 
   const map = new mapboxgl.Map({
     container: 'map-holder', // container ID
     style: 'mapbox://styles/mapbox/light-v10?optimize=true',
     center: [-73.935242, 40.73061], // starting position [lng, lat]
-    zoom: 13, // starting zoom
+    zoom: 11, // starting zoom
   });
   mapGlobals.map = map;
 };
 
 export const renderPlotPoints = (data, mapGlobals) => {
-  console.log('rendering starts');
-  console.log('loaded');
   mapGlobals.map.addSource('trees', {
     type: 'geojson',
     data: data,
     cluster: true,
-    clusterMaxZoom: 15,
+    clusterMaxZoom: 13,
     clusterRadius: 50,
   });
+  
   mapGlobals.map.addLayer({
     id: 'clustered-trees',
     type: 'circle',
@@ -54,6 +52,7 @@ export const renderPlotPoints = (data, mapGlobals) => {
       ],
     },
   });
+  
   mapGlobals.map.addLayer({
     id: 'unclustered-trees',
     type: 'circle',
@@ -85,6 +84,9 @@ export const addMapClick = ({
   setActiveTree,
 } = {}) => {
   mapGlobals.map.on('click', 'clustered-trees', (event) => {
+
+    console.log('made it here')
+    
     const features = mapGlobals.map.queryRenderedFeatures(event.point, {
       layers: ['clustered-trees'],
     });

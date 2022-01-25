@@ -7,6 +7,7 @@ import {
 import { useStore } from "vuex";
 import { computed, watch, onMounted, ref } from "vue";
 
+
 export default {
   name: "Map",
   setup() {
@@ -25,14 +26,13 @@ export default {
     // hooks
     onMounted(() => renderMap(mapGlobals.value));
     watch(treeData, () => {
-      console.log(treeData.value);
-      renderPlotPoints(treeData.value, mapGlobals.value);
+      renderPlotPoints(treeData.value.features, mapGlobals.value);
       addMapClick({
         mapGlobals: mapGlobals.value, 
         setSideBarTrue: setSideBarTrue, 
         toggleSideBar: toggleSideBar, 
         setActiveTree: setActiveTree});
-    });
+    }, {deep:true});
     
     return{
       mapGlobals
