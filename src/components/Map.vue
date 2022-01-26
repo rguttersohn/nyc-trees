@@ -31,6 +31,7 @@ export default {
       renderPlotPoints({
         data: treeData.value,
         mapGlobals: mapGlobals.value});
+
       addMapClick({
         mapGlobals: mapGlobals.value, 
         setSideBarTrue: setSideBarTrue, 
