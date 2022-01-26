@@ -28,6 +28,7 @@ export default {
     // hooks
     onMounted(() => renderMap({mapGlobals: mapGlobals.value}));
     watch(treeData, () => {
+      if(treeData.value.features.length !== 300) return;
       renderPlotPoints({
         data: treeData.value,
         mapGlobals: mapGlobals.value});

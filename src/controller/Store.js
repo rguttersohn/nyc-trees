@@ -6,10 +6,9 @@ const apiToken = vault.apiToken;
 const store = createStore({
     state(){
         return {
-            treesURL_1: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100`),
-            treesURL_2: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=100`),
-            treesURL_3: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=200`),
-            treesURL_4:`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=300`,
+            treesURL_1: `https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100`,
+            treesURL_2: `https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=100`,
+            treesURL_3: `https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=200`,
             treeData:{type: 'FeatureCollection', features: [] },
             activeTree:{},
             sideBarActive: false,
@@ -35,30 +34,29 @@ const store = createStore({
     },
     actions:{
         getTreeData ({state, commit}){
-            console.time('fetching and organizing tree data')
-            Promise.all([state.treesURL_1,state.treesURL_2,state.treesURL_3])
-            .then(response=> Promise.all(response.map(resp=>resp.json())))
-            .then(treeData => {
-                for(let i = 0 ; i < treeData.length; i++){
-                    treeData[i].features.forEach(d => {
-                        d.geometry = {type: 'Point', 'coordinates' : []};
-                        d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude));
-                        commit('setTreeData', d);
-                    });
-                    console.timeEnd('fetching and organizing tree data')
-                }
-            }).then(fetch(state.treesURL_4)
+            console.time('fetching tree data using chained fetch')
+            const setTreeData = (treeData) =>{
+                treeData.features.forEach(d => {
+                    d.geometry = {type: 'Point', 'coordinates' : []};
+                    d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude));
+                    commit('setTreeData', d);
+                });
+            }
+            fetch(state.treesURL_1)
+            .then(response=> response.json())
+            .then(treeData => setTreeData(treeData))
+            .then(fetch(state.treesURL_2)
                 .then(response => response.json())
-                .then(treeData => {
-                    treeData.features.forEach(d => {
-                        d.geometry = {type: 'Point', 'coordinates' : []};
-                        d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude));
-                        commit('setTreeData', d);
-                    })
-                }
-                   
+                .then(treeData => setTreeData(treeData))
+                .then(fetch(state.treesURL_3)
+                    .then(response => response.json())
+                    .then(treeData => {
+                        setTreeData(treeData)
+                        console.timeEnd('fetching tree data using chained fetch')
+                    }) 
             ))
             .catch(error => console.error(error));
+            
         }
     }
 })
