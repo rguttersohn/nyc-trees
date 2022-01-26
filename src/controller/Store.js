@@ -7,8 +7,9 @@ const store = createStore({
     state(){
         return {
             treesURL_1: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100`),
-            treesURL_2: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=50000`),
-            treesURL_3: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=100000`),
+            treesURL_2: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=100`),
+            treesURL_3: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=200`),
+            treesURL_4:`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=300`,
             treeData:{type: 'FeatureCollection', features: [] },
             activeTree:{},
             sideBarActive: false,
@@ -46,8 +47,17 @@ const store = createStore({
                     });
                     console.timeEnd('fetching and organizing tree data')
                 }
-
-            })
+            }).then(fetch(state.treesURL_4)
+                .then(response => response.json())
+                .then(treeData => {
+                    treeData.features.forEach(d => {
+                        d.geometry = {type: 'Point', 'coordinates' : []};
+                        d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude));
+                        commit('setTreeData', d);
+                    })
+                }
+                   
+            ))
             .catch(error => console.error(error));
         }
     }
