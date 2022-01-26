@@ -34,6 +34,7 @@ const store = createStore({
     },
     actions:{
         getTreeData ({state, commit}){
+            console.time('fetching and organizing tree data')
             Promise.all([state.treesURL_1,state.treesURL_2,state.treesURL_3])
             .then(response=> Promise.all(response.map(resp=>resp.json())))
             .then(treeData => {
@@ -43,8 +44,9 @@ const store = createStore({
                         d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude));
                         commit('setTreeData', d);
                     });
+                    console.timeEnd('fetching and organizing tree data')
                 }
-                          
+
             })
             .catch(error => console.error(error));
         }

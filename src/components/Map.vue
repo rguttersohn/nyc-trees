@@ -14,6 +14,7 @@ export default {
     const store = useStore();
     // state data
     const treeData = computed(() => store.state.treeData);
+
     // mutations
     const setActiveTree = (activeTree) => store.commit('setActiveTree', activeTree);
     const toggleSideBar = () => store.commit('toggleSideBar');
@@ -21,19 +22,21 @@ export default {
     // component data
     const mapGlobals = ref({
       map: "",
-      lastTreeID:0
+      lastTreeID:0,
+      loaded: false,
     });
     // hooks
-    onMounted(() => renderMap(mapGlobals.value));
+    onMounted(() => renderMap({mapGlobals: mapGlobals.value}));
     watch(treeData, () => {
-      renderPlotPoints(treeData.value.features, mapGlobals.value);
+      renderPlotPoints({
+        data: treeData.value,
+        mapGlobals: mapGlobals.value});
       addMapClick({
         mapGlobals: mapGlobals.value, 
         setSideBarTrue: setSideBarTrue, 
         toggleSideBar: toggleSideBar, 
         setActiveTree: setActiveTree});
-    }, {deep:true});
-    
+    }, {deep: true});
     return{
       mapGlobals
     }
