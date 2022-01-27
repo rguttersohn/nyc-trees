@@ -18,7 +18,6 @@ export const renderMap = ({ mapGlobals } = {}) => {
 };
 
 export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
-  mapGlobals.map.on('load', () => {
     mapGlobals.map.addSource('trees', {
       type: 'geojson',
       data: data,
@@ -67,9 +66,6 @@ export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
         'circle-color': '#00693E',
         'circle-radius': 4,
       },
-      layout: {
-        'icon-allow-overlap': true
-      }
     });
 
     mapGlobals.map.addLayer({
@@ -83,7 +79,6 @@ export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
         'text-size': 12,
       },
     });
-  });
 };
 
 export const addMapClick = ({
@@ -92,7 +87,6 @@ export const addMapClick = ({
   toggleSideBar,
   setActiveTree,
 } = {}) => {
-  mapGlobals.map.on('load', () => {
     mapGlobals.map.on('click', 'clustered-trees', (event) => {
       
       const features = mapGlobals.map.queryRenderedFeatures(event.point, {
@@ -129,5 +123,4 @@ export const addMapClick = ({
         toggleSideBar();
       }
     });
-  });
 };

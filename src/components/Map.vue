@@ -33,7 +33,7 @@ export default {
       } 
     }, {deep: true})
     watch(treeData, () => {
-      if(treeData.value.features.length !== 30000) return;
+      if(treeData.value.features.length !== 3000) return;
       console.log('rendering starts');
       renderPlotPoints({
         data: treeData.value,
