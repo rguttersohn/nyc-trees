@@ -9,20 +9,25 @@ export const renderMap = ({ mapGlobals } = {}) => {
     style: 'mapbox://styles/mapbox/light-v10?optimize=true',
     center: [-73.935242, 40.73061], // starting position [lng, lat]
     zoom: 11, // starting zoom
+    maxZoom: 11,
+    minZoom: 10
   });
   mapGlobals.map = map;
   mapGlobals.map.on('load', () => (mapGlobals.loaded = true));
 };
 
 export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
-  mapGlobals.map.on('load', () => {
+    
     mapGlobals.map.addSource('trees', {
       type: 'geojson',
-      data: data,
+      data: {},
       cluster: true,
-      clusterMaxZoom: 13,
+      clusterMaxZoom: 12,
       clusterRadius: 50,
     });
+    
+
+    mapGlobals.map.getSource('trees').setData(data)
 
     mapGlobals.map.addLayer({
       id: 'clustered-trees',
@@ -77,7 +82,6 @@ export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
         'text-size': 12,
       },
     });
-  });
 };
 
 export const addMapClick = ({
@@ -86,7 +90,7 @@ export const addMapClick = ({
   toggleSideBar,
   setActiveTree,
 } = {}) => {
-  mapGlobals.map.on('load', () => {
+ 
     mapGlobals.map.on('click', 'clustered-trees', (event) => {
       
       const features = mapGlobals.map.queryRenderedFeatures(event.point, {
@@ -123,5 +127,4 @@ export const addMapClick = ({
         toggleSideBar();
       }
     });
-  });
 };

@@ -6,9 +6,9 @@ const apiToken = vault.apiToken;
 const store = createStore({
     state(){
         return {
-            treesURL_1: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100`),
-            treesURL_2: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=50000`),
-            treesURL_3: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=100&$offset=100000`),
+            treesURL_1: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=50000`),
+            treesURL_2: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=50000&$offset=50000`),
+            treesURL_3: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=50000&$offset=100000`),
             treeData:{type: 'FeatureCollection', features: [] },
             activeTree:{},
             sideBarActive: false,
