@@ -8,10 +8,13 @@ export const renderMap = ({ mapGlobals } = {}) => {
     container: 'map-holder', // container ID
     style: 'mapbox://styles/mapbox/light-v10?optimize=true',
     center: [-73.935242, 40.73061], // starting position [lng, lat]
-    zoom: 11, // starting zoom
+    zoom: 9,// starting zoom
+    maxZoom: 12,
+    minZoom: 3
   });
   mapGlobals.map = map;
-  mapGlobals.map.on('load', () => (mapGlobals.loaded = true));
+  map.on('load', ()=>mapGlobals.loaded = true)
+  
 };
 
 export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
@@ -64,6 +67,9 @@ export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
         'circle-color': '#00693E',
         'circle-radius': 4,
       },
+      layout: {
+        'icon-allow-overlap': true
+      }
     });
 
     mapGlobals.map.addLayer({

@@ -27,8 +27,14 @@ export default {
     });
     // hooks
     onMounted(() => renderMap({mapGlobals: mapGlobals.value}));
+    watch(mapGlobals, () => {
+      if(mapGlobals.value.loaded){
+        store.dispatch("getTreeData");
+      } 
+    }, {deep: true})
     watch(treeData, () => {
-      if(treeData.value.features.length !== 300) return;
+      if(treeData.value.features.length !== 30000) return;
+      console.log('rendering starts');
       renderPlotPoints({
         data: treeData.value,
         mapGlobals: mapGlobals.value});

@@ -1,6 +1,4 @@
 <script>
-import { useStore } from "vuex";
-import { onMounted } from "vue";
 import Map from "./components/Map.vue"
 import SideBar from './components/SideBar.vue'
 
@@ -9,19 +7,7 @@ export default {
   components: {
     Map,
     SideBar
-  },
-  setup() {
-    const store = useStore();
-    const treeData = store.state.treeData;
-
-    onMounted(() => {
-      store.dispatch("getTreeData");
-    });
-
-    return{
-      treeData
-    }
-  },
+  }
 };
 </script>
 
