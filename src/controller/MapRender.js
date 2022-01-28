@@ -1,35 +1,34 @@
 import mapboxgl from 'mapbox-gl';
 import vault from '../../vault.js';
 
-export const renderMap = ({ mapGlobals } = {}) => {
+export const renderMap = ({ globals } = {}) => {
   mapboxgl.accessToken = vault.mapBoxToken;
 
   const map = new mapboxgl.Map({
     container: 'map-holder', // container ID
     style: 'mapbox://styles/mapbox/light-v10?optimize=true',
     center: [-73.935242, 40.73061], // starting position [lng, lat]
-    zoom: 11, // starting zoom
-    maxZoom: 11,
+    zoom: 10, // starting zoom
+    maxZoom: 15,
     minZoom: 10
   });
-  mapGlobals.map = map;
-  mapGlobals.map.on('load', () => (mapGlobals.loaded = true));
+  globals.map = map;
+  globals.map.on('load', () => (globals.loaded = true));
 };
 
-export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
+export const initPlotPoints = ({ globals } = {}) => {
     
-    mapGlobals.map.addSource('trees', {
+    globals.map.addSource('trees', {
       type: 'geojson',
       data: {},
       cluster: true,
-      clusterMaxZoom: 12,
-      clusterRadius: 50,
+      clusterRadius: 60,
+      tolerance: 1,
+      buffer: 0,
+      clusterMaxZoom: 13
     });
-    
 
-    mapGlobals.map.getSource('trees').setData(data)
-
-    mapGlobals.map.addLayer({
+    globals.map.addLayer({
       id: 'clustered-trees',
       type: 'circle',
       source: 'trees',
@@ -60,7 +59,7 @@ export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
       },
     });
 
-    mapGlobals.map.addLayer({
+    globals.map.addLayer({
       id: 'unclustered-trees',
       type: 'circle',
       source: 'trees',
@@ -71,7 +70,7 @@ export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
       },
     });
 
-    mapGlobals.map.addLayer({
+    globals.map.addLayer({
       id: 'cluster-count',
       type: 'symbol',
       source: 'trees',
@@ -82,47 +81,54 @@ export const renderPlotPoints = ({ data, mapGlobals } = {}) => {
         'text-size': 12,
       },
     });
-};
+
+  }
+    
+export const addData = ({data, globals} = {}, increaseOffset)=>{
+  globals.map.getSource('trees').setData(data)
+  increaseOffset()
+}
+
 
 export const addMapClick = ({
-  mapGlobals,
+  globals,
   setSideBarTrue,
   toggleSideBar,
   setActiveTree,
 } = {}) => {
  
-    mapGlobals.map.on('click', 'clustered-trees', (event) => {
+    globals.map.on('click', 'clustered-trees', (event) => {
       
-      const features = mapGlobals.map.queryRenderedFeatures(event.point, {
+      const features = globals.map.queryRenderedFeatures(event.point, {
         layers: ['clustered-trees'],
       });
 
       const clusterId = features[0].properties.cluster_id;
 
-      mapGlobals.map
+      globals.map
         .getSource('trees')
         .getClusterExpansionZoom(clusterId, (err, zoom) => {
           if (err) return;
 
-          mapGlobals.map.easeTo({
+          globals.map.easeTo({
             center: features[0].geometry.coordinates,
             zoom: zoom,
           });
         });
     });
 
-    mapGlobals.map.on('click', (event) => {
-      const features = mapGlobals.map.queryRenderedFeatures(event.point, {
+    globals.map.on('click', (event) => {
+      const features = globals.map.queryRenderedFeatures(event.point, {
         layers: ['unclustered-trees'],
       });
 
       if (!features.length) {
         return;
       }
-      if (features[0].properties.tree_id !== mapGlobals.lastTreeID) {
+      if (features[0].properties.tree_id !== globals.lastTreeID) {
         setActiveTree(features[0].properties);
         setSideBarTrue();
-        mapGlobals.lastTreeID = features[0].properties.tree_id;
+        globals.lastTreeID = features[0].properties.tree_id;
       } else {
         toggleSideBar();
       }

@@ -6,17 +6,21 @@ const apiToken = vault.apiToken;
 const store = createStore({
     state(){
         return {
-            treesURL_1: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=50000`),
-            treesURL_2: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=50000&$offset=50000`),
-            treesURL_3: fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=50000&$offset=100000`),
-            treeData:{type: 'FeatureCollection', features: [] },
+            treeData: {
+                type: 'FeatureCollection',
+                features: [],
+            },
+            currentOffset: 0,
             activeTree:{},
-            sideBarActive: false,
+            sideBarActive: false,         
         }
     },
     mutations: {
         setTreeData(state, treeData){
             state.treeData.features.push(treeData)
+        },
+        increaseOffset(state){
+            state.currentOffset = state.currentOffset + 50001
         },
         toggleSideBar(state){
             state.sideBarActive = !state.sideBarActive;
@@ -34,16 +38,16 @@ const store = createStore({
     },
     actions:{
         getTreeData ({state, commit}){
-            console.time('fetching data using promise.all')
-            Promise.all([state.treesURL_1,state.treesURL_2,state.treesURL_3])
-            .then(response=> Promise.all(response.map(resp=>resp.json())))
-            .then(treeData => {
-                for(let i = 0 ; i < treeData.length; i++){
-                    treeData[i].features.forEach(d => {
-                        d.geometry = {type: 'Point', 'coordinates' : []};
-                        d.geometry.coordinates.push(parseFloat(d.properties.longitude), parseFloat(d.properties.latitude));
-                        commit('setTreeData', d);
-                    });
+            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=5000&$offset=${state.currentOffset}`)
+            .then(response=> 
+                {console.log(response)
+                return response.json()})
+            .then(fetchedData => {
+                console.time('fetching data using promise.all')
+                for(let i = 0 ; i < fetchedData.features.length; i++){
+                        fetchedData.features[i].geometry = {type: 'Point', 'coordinates' : []};
+                        fetchedData.features[i].geometry.coordinates.push(parseFloat(fetchedData.features[i].properties.longitude).toFixed(6), parseFloat(fetchedData.features[i].properties.latitude).toFixed(6));
+                        commit('setTreeData', fetchedData.features[i]);
                 }
                 console.timeEnd('fetching data using promise.all')
             })
