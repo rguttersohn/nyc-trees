@@ -7,10 +7,10 @@ export const renderMap = ({ globals } = {}) => {
   const map = new mapboxgl.Map({
     container: 'map-holder', // container ID
     style: 'mapbox://styles/mapbox/light-v10?optimize=true',
-    center: [-73.935242, 40.73061], // starting position [lng, lat]
-    zoom: 10, // starting zoom
-    maxZoom: 15,
-    minZoom: 10
+    center: [-73.984016, 40.754932], // starting position [lng, lat]
+    zoom: 13, // starting zoom
+    maxZoom: 16,
+    minZoom: 11
   });
   globals.map = map;
   globals.map.on('load', () => (globals.loaded = true));
@@ -51,9 +51,9 @@ export const initPlotPoints = ({ globals } = {}) => {
           '#c8d3cc',
           100,
           '#96b4a1',
-          1000,
+          500,
           '#649678',
-          5000,
+          1000,
           '#2e7851',
         ],
       },
@@ -65,7 +65,17 @@ export const initPlotPoints = ({ globals } = {}) => {
       source: 'trees',
       filter: ['!', ['has', 'point_count']],
       paint: {
-        'circle-color': '#00693E',
+        'circle-color': [
+          'match',
+          ['get', 'status'],
+          'Alive',
+          'green',
+          'Dead',
+          'coral',
+          'Stump',
+          'red',
+          'green'
+        ],
         'circle-radius': 4,
       },
     });

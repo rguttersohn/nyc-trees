@@ -20,7 +20,7 @@ const store = createStore({
             state.treeData.features.push(treeData)
         },
         increaseOffset(state){
-            state.currentOffset = state.currentOffset + 50001
+            state.currentOffset = state.currentOffset + 10001
         },
         toggleSideBar(state){
             state.sideBarActive = !state.sideBarActive;
@@ -38,18 +38,14 @@ const store = createStore({
     },
     actions:{
         getTreeData ({state, commit}){
-            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=5000&$offset=${state.currentOffset}`)
-            .then(response=> 
-                {console.log(response)
-                return response.json()})
+            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=10000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&boroname=Manhattan`)
+            .then(response=> response.json())
             .then(fetchedData => {
-                console.time('fetching data using promise.all')
                 for(let i = 0 ; i < fetchedData.features.length; i++){
                         fetchedData.features[i].geometry = {type: 'Point', 'coordinates' : []};
                         fetchedData.features[i].geometry.coordinates.push(parseFloat(fetchedData.features[i].properties.longitude).toFixed(6), parseFloat(fetchedData.features[i].properties.latitude).toFixed(6));
                         commit('setTreeData', fetchedData.features[i]);
                 }
-                console.timeEnd('fetching data using promise.all')
             })
             .catch(error => console.error(error));
             
