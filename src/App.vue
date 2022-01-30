@@ -1,21 +1,24 @@
 <script>
 
-import Map from "./components/Map.vue"
-import SideBar from './components/SideBar.vue'
+import Map from "./components/Map.vue";
+import SideBar from './components/SideBar.vue';
+import Filter from './components/Filter.vue';
 
 export default {
   name: "App",
   components: {
     Map,
-    SideBar
+    SideBar,
+    Filter
   },
 };
 </script>
 
 <template>
-  <main class="w-screen h-screen flex">
+  <main class="w-screen h-screen flex relative">
     <Map/>
     <SideBar />
+    <Filter />
   </main>
 </template>
 

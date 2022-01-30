@@ -6,6 +6,7 @@ const apiToken = vault.apiToken;
 const store = createStore({
     state(){
         return {
+            activeBorough: 'Manhattan',
             treeData: {
                 type: 'FeatureCollection',
                 features: [],
@@ -16,6 +17,9 @@ const store = createStore({
         }
     },
     mutations: {
+        setActiveBorough(state, value ){
+            state.activeBorough = value
+        },
         setTreeData(state, treeData){
             state.treeData.features.push(treeData)
         },
@@ -38,7 +42,7 @@ const store = createStore({
     },
     actions:{
         getTreeData ({state, commit}){
-            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=10000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&boroname=Manhattan`)
+            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=10000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&boroname=${state.activeBorough}`)
             .then(response=> response.json())
             .then(fetchedData => {
                 for(let i = 0 ; i < fetchedData.features.length; i++){
