@@ -144,3 +144,10 @@ export const addMapClick = ({
       }
     });
 };
+
+export const recenterMap = ({globals, coordinates} = {}) =>{
+  globals.map.flyTo({
+    center: coordinates,
+    zoom: 13
+  })
+}

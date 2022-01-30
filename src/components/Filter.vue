@@ -2,7 +2,10 @@
 export default {
     methods:{
         selectBorough(event){
-            this.$store.commit('setActiveBorough', event.target.value)
+            this.$store.commit('setActiveBorough', event.target.value);
+            this.$store.commit('resetOffset');
+            this.$store.commit('emptyTreeData');
+            this.$store.dispatch('getTreeData');
         }
     }
 }

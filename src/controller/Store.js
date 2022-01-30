@@ -7,6 +7,13 @@ const store = createStore({
     state(){
         return {
             activeBorough: 'Manhattan',
+            boroughCoordinates: {
+                'Manhattan': [-73.971321, 40.776676],
+                'Bronx': [-73.865433, 40.837048],
+                'Brooklyn': [-73.949997, 40.650002],
+                'Staten Island': [-74.151535, 40.579021],
+                'Queens': [-73.769417, 40.742054],
+            },
             treeData: {
                 type: 'FeatureCollection',
                 features: [],
@@ -23,8 +30,17 @@ const store = createStore({
         setTreeData(state, treeData){
             state.treeData.features.push(treeData)
         },
+        emptyTreeData(state){
+            state.treeData = {
+                type: 'FeatureCollection',
+                features: [],
+            }
+        },
         increaseOffset(state){
             state.currentOffset = state.currentOffset + 10001
+        },
+        resetOffset(state){
+            state.currentOffset = 0;
         },
         toggleSideBar(state){
             state.sideBarActive = !state.sideBarActive;

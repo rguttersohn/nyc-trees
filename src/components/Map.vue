@@ -4,6 +4,7 @@ import {
   initPlotPoints,
   addMapClick,
   addData,
+  recenterMap
 } from "../controller/MapRender";
 import { useStore } from "vuex";
 import { computed, watch, onMounted, ref } from "vue";
@@ -16,6 +17,7 @@ export default {
     // state data
     const treeData = computed(() => store.state.treeData);
     const currentOffset = computed(()=> store.state.currentOffset);
+    const activeBorough = computed(()=> store.state.activeBorough);
 
     // mutations
     const setActiveTree = (activeTree) => store.commit('setActiveTree', activeTree);
@@ -42,9 +44,13 @@ export default {
     }, {deep: true});
 
     watch(currentOffset, ()=>{
-      console.log('triggered getting new data')
       store.dispatch('getTreeData');
     });
+    watch(activeBorough, () => {
+      console.log('triggered recenter')
+      console.log(store.state.boroughCoordinates[`${activeBorough.value}`])
+      recenterMap({globals: mapGlobals.value, coordinates: store.state.boroughCoordinates[`${activeBorough.value}`]})
+    })
     return {mapGlobals}
   },
 };
