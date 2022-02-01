@@ -20,10 +20,10 @@ export default {
     const activeBorough = computed(()=> store.state.activeBorough);
 
     // mutations
-    const setActiveTree = (activeTree) => store.commit('setActiveTree', activeTree);
     const toggleSideBar = () => store.commit('toggleSideBar');
     const setSideBarTrue = () => store.commit('setSideBarTrue');
     const increaseOffset = () => store.commit('increaseOffset');
+    const getActiveTreeData = (clickedTreeID) => store.dispatch('getActiveTreeData', clickedTreeID);
     const mapLoaded = computed(() => mapGlobals.value.loaded);
 
     // component data
@@ -37,7 +37,7 @@ export default {
     watch(mapLoaded, ()=>{
         store.dispatch("getTreeData");
         initPlotPoints({globals: mapGlobals.value});
-        addMapClick({globals: mapGlobals.value, setSideBarTrue: setSideBarTrue, toggleSideBar: toggleSideBar, setActiveTree: setActiveTree});
+        addMapClick({globals: mapGlobals.value, setSideBarTrue: setSideBarTrue, toggleSideBar: toggleSideBar}, getActiveTreeData);
     })
     watch(treeData, () => {
       addData({data: treeData.value, globals: mapGlobals.value}, increaseOffset);

@@ -19,7 +19,7 @@ const store = createStore({
                 features: [],
             },
             currentOffset: 0,
-            activeTree:{},
+            activeTree:{activeTreeID: 0},
             sideBarActive: false,         
         }
     },
@@ -37,7 +37,7 @@ const store = createStore({
             }
         },
         increaseOffset(state){
-            state.currentOffset = state.currentOffset + 10001
+            state.currentOffset = state.currentOffset + 20000
         },
         resetOffset(state){
             state.currentOffset = 0;
@@ -51,14 +51,17 @@ const store = createStore({
         setSideBarFalse(state){
             state.sideBarActive = false
         },
-        setActiveTree(state, activeTree){
-            state.activeTree = activeTree
+        setClickedTreeID(state, clickedTreeID){
+            state.activeTree.activeTreeID = clickedTreeID
+        },
+        setActiveTree(state, fetchedTreeData){
+            Object.assign(state.activeTree, fetchedTreeData)
         }
         
     },
     actions:{
         getTreeData ({state, commit}){
-            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=10000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&boroname=${state.activeBorough}`)
+            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=20000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&council_district=10`)
             .then(response=> response.json())
             .then(fetchedData => {
                 for(let i = 0 ; i < fetchedData.features.length; i++){
@@ -69,6 +72,15 @@ const store = createStore({
             })
             .catch(error => console.error(error));
             
+        },
+        async getActiveTreeData ({state, commit}, clickedTreeID){
+            commit('setClickedTreeID', clickedTreeID)
+            let {activeTreeID} = state.activeTree;
+            await fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.json?$$app_token=${apiToken}&tree_id=${activeTreeID}`)
+            .then(response => response.json())
+            .then(fetchedTreeData => {
+                commit('setActiveTree', fetchedTreeData[0])
+            })
         }
     }
 })

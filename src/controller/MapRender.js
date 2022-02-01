@@ -8,7 +8,7 @@ export const renderMap = ({ globals } = {}) => {
     container: 'map-holder', // container ID
     style: 'mapbox://styles/mapbox/light-v10?optimize=true',
     center: [-73.984016, 40.754932], // starting position [lng, lat]
-    zoom: 13, // starting zoom
+    zoom: 11, // starting zoom
     maxZoom: 16,
     minZoom: 11
   });
@@ -23,8 +23,7 @@ export const initPlotPoints = ({ globals } = {}) => {
       data: {},
       cluster: true,
       clusterRadius: 60,
-      tolerance: 1,
-      buffer: 0,
+      buffer: 128,
       clusterMaxZoom: 13
     });
 
@@ -104,8 +103,7 @@ export const addMapClick = ({
   globals,
   setSideBarTrue,
   toggleSideBar,
-  setActiveTree,
-} = {}) => {
+} = {}, getActiveTreeData) => {
  
     globals.map.on('click', 'clustered-trees', (event) => {
       
@@ -131,12 +129,15 @@ export const addMapClick = ({
       const features = globals.map.queryRenderedFeatures(event.point, {
         layers: ['unclustered-trees'],
       });
+      
+      
 
       if (!features.length) {
         return;
       }
+
       if (features[0].properties.tree_id !== globals.lastTreeID) {
-        setActiveTree(features[0].properties);
+        getActiveTreeData(features[0].properties.tree_id)
         setSideBarTrue();
         globals.lastTreeID = features[0].properties.tree_id;
       } else {
@@ -148,6 +149,6 @@ export const addMapClick = ({
 export const recenterMap = ({globals, coordinates} = {}) =>{
   globals.map.flyTo({
     center: coordinates,
-    zoom: 13
+    zoom: 11
   })
 }
