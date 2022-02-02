@@ -7,8 +7,8 @@ export const renderMap = ({ globals } = {}) => {
   const map = new mapboxgl.Map({
     container: 'map-holder', // container ID
     style: 'mapbox://styles/mapbox/light-v10?optimize=true',
-    center: [-73.984016, 40.754932], // starting position [lng, lat]
-    zoom: 11, // starting zoom
+    center: [-73.9394, 40.8417], // starting position [lng, lat]
+    zoom: 14, // starting zoom
     maxZoom: 16,
     minZoom: 11
   });

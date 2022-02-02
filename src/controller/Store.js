@@ -61,7 +61,7 @@ const store = createStore({
     },
     actions:{
         getTreeData ({state, commit}){
-            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=20000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&council_district=10`)
+            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=20000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&cb_num=401`)
             .then(response=> response.json())
             .then(fetchedData => {
                 for(let i = 0 ; i < fetchedData.features.length; i++){

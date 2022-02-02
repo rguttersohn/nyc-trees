@@ -49,7 +49,7 @@ export default {
     watch(activeBorough, () => {
       console.log('triggered recenter')
       console.log(store.state.boroughCoordinates[`${activeBorough.value}`])
-      recenterMap({globals: mapGlobals.value, coordinates: store.state.boroughCoordinates[`${activeBorough.value}`]})
+      recenterMap({globals: mapGlobals.value, coordinates: [store.state.boroughCoordinates[`${activeBorough.value}`]]})
     })
     return {mapGlobals}
   },
