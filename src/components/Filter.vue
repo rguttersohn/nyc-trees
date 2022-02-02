@@ -1,8 +1,8 @@
 <script>
 export default {
     methods:{
-        selectBorough(event){
-            this.$store.commit('setActiveBorough', event.target.value);
+        selectCommunityDistrict(event){
+            this.$store.commit('setActiveCommunityDistrict', event.target.value);
             this.$store.commit('resetOffset');
             this.$store.commit('emptyTreeData');
             this.$store.dispatch('getTreeData');
@@ -14,7 +14,7 @@ export default {
 <template>
     <div class="absolute ml-10 mt-10 p-5 border-2 border-light-900">
        <h3>Filter by borough:</h3>
-       <select @change="selectBorough" name="" id="">
+       <select @change="selectCommunityDistrict" name="" id="">
            <optgroup label="Manhattan">
                <option value="101">Financial District/Battery Park City/Tribeca</option>
                <option value="102">Greenwich Village/Soho</option>
@@ -44,7 +44,7 @@ export default {
                <option value="212">Williamsbridge/Wakefield</option>
            </optgroup>
            <optgroup label="Brooklyn">
-                <option value="301">Greenpoint/East Williamsburg</option>
+                <option value="301">Greenpoint/Williamsburg</option>
                 <option value="302">Brooklyn Heights/Downtown Brooklyn</option>
                 <option value="303">Bedford-Stuyvesant</option>
                 <option value="304">Bushwick</option>

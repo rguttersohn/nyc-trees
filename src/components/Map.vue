@@ -17,7 +17,7 @@ export default {
     // state data
     const treeData = computed(() => store.state.treeData);
     const currentOffset = computed(()=> store.state.currentOffset);
-    const activeBorough = computed(()=> store.state.activeBorough);
+    const activeCommunityDistrict = computed(()=> store.state.activeCommunityDistrict);
 
     // mutations
     const toggleSideBar = () => store.commit('toggleSideBar');
@@ -46,10 +46,10 @@ export default {
     watch(currentOffset, ()=>{
       store.dispatch('getTreeData');
     });
-    watch(activeBorough, () => {
+    watch(activeCommunityDistrict, () => {
       console.log('triggered recenter')
-      console.log(store.state.boroughCoordinates[`${activeBorough.value}`])
-      recenterMap({globals: mapGlobals.value, coordinates: [store.state.boroughCoordinates[`${activeBorough.value}`]]})
+      console.log(store.state.cdCoordinates[`${activeCommunityDistrict.value}`])
+      recenterMap({globals: mapGlobals.value, coordinates: store.state.cdCoordinates[`${activeCommunityDistrict.value}`]})
     })
     return {mapGlobals}
   },
