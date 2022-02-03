@@ -21,15 +21,6 @@ export default {
     const treeData = computed(() => store.state.treeData);
     const currentOffset = computed(()=> store.state.currentOffset);
     const activeCommunityDistrict = computed(()=> store.state.activeCommunityDistrict);
-
-    // mutations
-    const toggleSideBar = () => store.commit('toggleSideBar');
-    const setSideBarTrue = () => store.commit('setSideBarTrue');
-    const increaseOffset = () => store.commit('increaseOffset');
-    const resetOffset = () => store.commit('resetOffset');
-    const emptyTreeData = () => store.commit('emptyTreeData');
-    const getActiveTreeData = (clickedTreeID) => store.dispatch('getActiveTreeData', clickedTreeID);
-    const setActiveCommunityDistrict = (value) => store.commit('setActiveCommunityDistrict', value);
     const mapLoaded = computed(() => mapGlobals.value.loaded);
 
     // component data
@@ -39,26 +30,26 @@ export default {
       loaded: false,
     });
     // hooks
-    onMounted(() => renderMap({globals: mapGlobals.value}));
+    onMounted(() => renderMap(mapGlobals.value));
     watch(mapLoaded, ()=>{
         store.dispatch('getTreeData');
-        renderCDMap({ globals: mapGlobals.value, activeCommunityDistrict: activeCommunityDistrict.value})
-        addCDEvents({globals: mapGlobals.value, activeCommunityDistrict: activeCommunityDistrict.value}, setActiveCommunityDistrict, resetOffset, emptyTreeData, store.dispatch('getTreeData'))
-        initPlotPoints({globals: mapGlobals.value});
-        addMapClick({globals: mapGlobals.value, setSideBarTrue: setSideBarTrue, toggleSideBar: toggleSideBar}, getActiveTreeData);
+        renderCDMap(mapGlobals.value, store)
+        addCDEvents(mapGlobals.value, store)
+        initPlotPoints(mapGlobals.value);
+        addMapClick(mapGlobals.value, store);
     })
     watch(treeData, () => {
-      addData({data: treeData.value, globals: mapGlobals.value}, increaseOffset);
+      addData(treeData.value, mapGlobals.value, store);
     }, {deep: true});
 
     watch(currentOffset, ()=>{
       store.dispatch('getTreeData');
     });
     watch(activeCommunityDistrict, () => {
-      refilterCDMap({globals: mapGlobals.value, activeCommunityDistrict: activeCommunityDistrict.value})
-      recenterMap({globals: mapGlobals.value, coordinates: cdCoordinates[`${activeCommunityDistrict.value}`]})
+      refilterCDMap(mapGlobals.value, store)
+      recenterMap( mapGlobals.value, cdCoordinates[`${activeCommunityDistrict.value}`])
     })
-    return {mapGlobals}
+
   },
 };
 </script>

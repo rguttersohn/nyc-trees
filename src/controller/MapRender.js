@@ -1,7 +1,9 @@
 import mapboxgl from 'mapbox-gl';
 import vault from '../../vault.js';
+import { computed } from 'vue';
+import store from './Store.js';
 
-export const renderMap = ({ globals } = {}) => {
+export const renderMap = ( globals ) => {
   mapboxgl.accessToken = vault.mapBoxToken;
 
   const map = new mapboxgl.Map({
@@ -21,7 +23,10 @@ export const renderMap = ({ globals } = {}) => {
   globals.map.on('load', () => (globals.loaded = true));
 };
 
-export const renderCDMap = ({globals, activeCommunityDistrict}={})=>{
+export const renderCDMap = (globals, store)=>{
+
+    const activeCommunityDistrict = store.state.activeCommunityDistrict;
+
     globals.map.addSource('community districts', {
       type:'geojson',
       data: 'https://services5.arcgis.com/GfwWNkhOj9bNBqoJ/arcgis/rest/services/NYC_Community_Districts/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=pgeojson'
@@ -52,7 +57,14 @@ export const renderCDMap = ({globals, activeCommunityDistrict}={})=>{
 
 }
 
-export const addCDEvents = ({globals, activeCommunityDistrict}, setActiveCommunityDistrict, resetOffset, emptyTreeData, getTreeData)=>{
+export const addCDEvents = (globals, store)=>{
+  
+  const activeCommunityDistrict = computed(()=>store.state.activeCommunityDistrict);
+  const setActiveCommunityDistrict = (value) => store.commit('setActiveCommunityDistrict', value);
+  const resetOffset = ()=>store.commit('resetOffset');
+  const emptyTreeData = ()=>store.commit('emptyTreeData');
+  const getTreeData = ()=>store.dispatch(getTreeData);
+
   globals.map.on('click','community districts fill', event => {  
 
     if(activeCommunityDistrict !== event.features[0].properties.BoroCD){
@@ -75,14 +87,15 @@ export const addCDEvents = ({globals, activeCommunityDistrict}, setActiveCommuni
 }
 
 
-export const refilterCDMap = ({globals, activeCommunityDistrict}) =>{
+export const refilterCDMap = (globals, store) =>{
+  const activeCommunityDistrict = store.state.activeCommunityDistrict;
       globals.map.setFilter(
         'community districts fill',
         ['!=', 'BoroCD', parseInt(activeCommunityDistrict)]
       )
 } 
 
-export const initPlotPoints = ({ globals } = {}) => {
+export const initPlotPoints = ( globals ) => {
     
     globals.map.addSource('trees', {
       type: 'geojson',
@@ -162,18 +175,17 @@ export const initPlotPoints = ({ globals } = {}) => {
 
 }
     
-export const addData = ({data, globals} = {}, increaseOffset)=>{
-  globals.map.getSource('trees').setData(data)
-  increaseOffset()
+export const addData = (data, globals, store)=>{
+  globals.map.getSource('trees').setData(data);
+  store.commit('increaseOffset');
 }
 
 
-export const addMapClick = ({
-  globals,
-  setSideBarTrue,
-  toggleSideBar,
-} = {}, getActiveTreeData) => {
- 
+export const addMapClick = (globals, store) => {
+    const setSideBarTrue = ()=>store.commit('setSideBarTrue');
+    const toggleSideBar = ()=> store.commit('toggleSideBar');
+    const getActiveTreeData = ()=>store.commit('getActiveTreeData');
+
     globals.map.on('click', 'clustered-trees', (event) => {
       
       const features = globals.map.queryRenderedFeatures(event.point, {
@@ -214,7 +226,7 @@ export const addMapClick = ({
 
 };
 
-export const recenterMap = ({globals, coordinates} = {}) =>{
+export const recenterMap = (globals, coordinates) =>{
   globals.map.flyTo({
     center: coordinates,
     zoom: 13
