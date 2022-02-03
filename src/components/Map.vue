@@ -8,6 +8,7 @@ import {
 } from "../controller/MapRender";
 import { useStore } from "vuex";
 import { computed, watch, onMounted, ref } from "vue";
+import cdCoordinates from "../controller/cdCoordinates";
 
 
 export default {
@@ -47,9 +48,7 @@ export default {
       store.dispatch('getTreeData');
     });
     watch(activeCommunityDistrict, () => {
-      console.log('triggered recenter')
-      console.log(store.state.cdCoordinates[`${activeCommunityDistrict.value}`])
-      recenterMap({globals: mapGlobals.value, coordinates: store.state.cdCoordinates[`${activeCommunityDistrict.value}`]})
+      recenterMap({globals: mapGlobals.value, coordinates: cdCoordinates[`${activeCommunityDistrict.value}`]})
     })
     return {mapGlobals}
   },
