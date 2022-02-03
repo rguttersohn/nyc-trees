@@ -6,11 +6,12 @@ import {
   addMapClick,
   addData,
   recenterMap,
+  addCDEvents,
+  refilterCDMap
 } from "../controller/MapRender";
 import { useStore } from "vuex";
 import { computed, watch, onMounted, ref } from "vue";
 import cdCoordinates from "../controller/cdCoordinates";
-import cdMap from "../assets/nycd.json";
 
 export default {
   name: "Map",
@@ -25,7 +26,10 @@ export default {
     const toggleSideBar = () => store.commit('toggleSideBar');
     const setSideBarTrue = () => store.commit('setSideBarTrue');
     const increaseOffset = () => store.commit('increaseOffset');
+    const resetOffset = () => store.commit('resetOffset');
+    const emptyTreeData = () => store.commit('emptyTreeData');
     const getActiveTreeData = (clickedTreeID) => store.dispatch('getActiveTreeData', clickedTreeID);
+    const setActiveCommunityDistrict = (value) => store.commit('setActiveCommunityDistrict', value);
     const mapLoaded = computed(() => mapGlobals.value.loaded);
 
     // component data
@@ -38,7 +42,8 @@ export default {
     onMounted(() => renderMap({globals: mapGlobals.value}));
     watch(mapLoaded, ()=>{
         store.dispatch('getTreeData');
-        renderCDMap({ globals: mapGlobals.value, cdMap: cdMap})
+        renderCDMap({ globals: mapGlobals.value, activeCommunityDistrict: activeCommunityDistrict.value})
+        addCDEvents({globals: mapGlobals.value, activeCommunityDistrict: activeCommunityDistrict.value}, setActiveCommunityDistrict, resetOffset, emptyTreeData, store.dispatch('getTreeData'))
         initPlotPoints({globals: mapGlobals.value});
         addMapClick({globals: mapGlobals.value, setSideBarTrue: setSideBarTrue, toggleSideBar: toggleSideBar}, getActiveTreeData);
     })
@@ -50,6 +55,7 @@ export default {
       store.dispatch('getTreeData');
     });
     watch(activeCommunityDistrict, () => {
+      refilterCDMap({globals: mapGlobals.value, activeCommunityDistrict: activeCommunityDistrict.value})
       recenterMap({globals: mapGlobals.value, coordinates: cdCoordinates[`${activeCommunityDistrict.value}`]})
     })
     return {mapGlobals}

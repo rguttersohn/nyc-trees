@@ -12,38 +12,75 @@ export const renderMap = ({ globals } = {}) => {
     maxZoom: 16,
     minZoom: 11
   });
+
+  map.dragRotate.disable();
+ 
+  map.touchZoomRotate.disableRotation();
   globals.map = map;
+
   globals.map.on('load', () => (globals.loaded = true));
 };
 
-export const renderCDMap = ({globals, cdMap}={})=>{
+export const renderCDMap = ({globals, activeCommunityDistrict}={})=>{
     globals.map.addSource('community districts', {
       type:'geojson',
-      data: cdMap
+      data: 'https://services5.arcgis.com/GfwWNkhOj9bNBqoJ/arcgis/rest/services/NYC_Community_Districts/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=pgeojson'
     })
 
     globals.map.addLayer({
-      id: 'community disricts fill',
+      id: 'community districts fill',
       type: 'fill',
       source: 'community districts',
       layout: {},
       paint: {
         'fill-color' : '#0099cd',
+        'fill-opacity' : 0.3,
+      },
+      'filter': ['!=', 'BoroCD', parseInt(activeCommunityDistrict)]
+    })
+
+    globals.map.addLayer({
+      id: 'community districts outline',
+      type: 'line',
+      source: 'community districts',
+      layout: {},
+      paint: {
+        'line-width' : 1,
+        'line-color' : '#0099cd'
       }
     })
 
-
-    globals.map.addLayer({
-      'id': 'community districts outline',
-      'type': 'line',
-      'source': 'community districts',
-      'paint': {
-        'line-color': '#000',
-        'line-width': 3
-      }
-    });
-
 }
+
+export const addCDEvents = ({globals, activeCommunityDistrict}, setActiveCommunityDistrict, resetOffset, emptyTreeData, getTreeData)=>{
+  globals.map.on('click','community districts fill', event => {  
+
+    if(activeCommunityDistrict !== event.features[0].properties.BoroCD){
+      setActiveCommunityDistrict(event.features[0].properties.BoroCD);
+      resetOffset();
+      emptyTreeData();
+      getTreeData;
+    }
+  });
+
+  globals.map.on('mouseenter', 'community districts fill', event => {
+    if(activeCommunityDistrict !== event.features[0].properties.boroCD){
+      globals.map.getCanvas().style.cursor = 'pointer';
+    }
+  });
+     
+  globals.map.on('mouseleave', 'community districts fill', () => {
+    globals.map.getCanvas().style.cursor = '';
+  });
+}
+
+
+export const refilterCDMap = ({globals, activeCommunityDistrict}) =>{
+      globals.map.setFilter(
+        'community districts fill',
+        ['!=', 'BoroCD', parseInt(activeCommunityDistrict)]
+      )
+} 
 
 export const initPlotPoints = ({ globals } = {}) => {
     
@@ -103,7 +140,7 @@ export const initPlotPoints = ({ globals } = {}) => {
           'coral',
           'Stump',
           'red',
-          'green'
+          'gray'
         ],
         'circle-radius': 4,
       },
@@ -126,7 +163,6 @@ export const initPlotPoints = ({ globals } = {}) => {
 }
     
 export const addData = ({data, globals} = {}, increaseOffset)=>{
-  console.log(data)
   globals.map.getSource('trees').setData(data)
   increaseOffset()
 }
@@ -163,8 +199,6 @@ export const addMapClick = ({
         layers: ['unclustered-trees'],
       });
       
-      
-
       if (!features.length) {
         return;
       }
@@ -177,6 +211,7 @@ export const addMapClick = ({
         toggleSideBar();
       }
     });
+
 };
 
 export const recenterMap = ({globals, coordinates} = {}) =>{
