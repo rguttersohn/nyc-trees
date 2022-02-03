@@ -3,7 +3,7 @@ import {
   renderMap,
   renderCDMap,
   initPlotPoints,
-  addMapClick,
+  addPlotPointEvents,
   addData,
   recenterMap,
   addCDEvents,
@@ -36,7 +36,7 @@ export default {
         renderCDMap(mapGlobals.value, store)
         addCDEvents(mapGlobals.value, store)
         initPlotPoints(mapGlobals.value);
-        addMapClick(mapGlobals.value, store);
+        addPlotPointEvents(mapGlobals.value, store);
     })
     watch(treeData, () => {
       addData(treeData.value, mapGlobals.value, store);

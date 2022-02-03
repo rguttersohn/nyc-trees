@@ -181,10 +181,10 @@ export const addData = (data, globals, store)=>{
 }
 
 
-export const addMapClick = (globals, store) => {
+export const addPlotPointEvents = (globals, store) => {
     const setSideBarTrue = ()=>store.commit('setSideBarTrue');
     const toggleSideBar = ()=> store.commit('toggleSideBar');
-    const getActiveTreeData = ()=>store.commit('getActiveTreeData');
+    const getActiveTreeData = (clickedTreeID)=>store.dispatch('getActiveTreeData', clickedTreeID);
 
     globals.map.on('click', 'clustered-trees', (event) => {
       
