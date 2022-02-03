@@ -16,6 +16,35 @@ export const renderMap = ({ globals } = {}) => {
   globals.map.on('load', () => (globals.loaded = true));
 };
 
+export const renderCDMap = ({globals, cdMap}={})=>{
+    globals.map.addSource('community districts', {
+      type:'geojson',
+      data: cdMap
+    })
+
+    globals.map.addLayer({
+      id: 'community disricts fill',
+      type: 'fill',
+      source: 'community districts',
+      layout: {},
+      paint: {
+        'fill-color' : '#0099cd',
+      }
+    })
+
+
+    globals.map.addLayer({
+      'id': 'community districts outline',
+      'type': 'line',
+      'source': 'community districts',
+      'paint': {
+        'line-color': '#000',
+        'line-width': 3
+      }
+    });
+
+}
+
 export const initPlotPoints = ({ globals } = {}) => {
     
     globals.map.addSource('trees', {
@@ -26,7 +55,7 @@ export const initPlotPoints = ({ globals } = {}) => {
       buffer: 128,
       clusterMaxZoom: 13
     });
-
+    
     globals.map.addLayer({
       id: 'clustered-trees',
       type: 'circle',
@@ -58,6 +87,7 @@ export const initPlotPoints = ({ globals } = {}) => {
       },
     });
 
+
     globals.map.addLayer({
       id: 'unclustered-trees',
       type: 'circle',
@@ -79,6 +109,8 @@ export const initPlotPoints = ({ globals } = {}) => {
       },
     });
 
+  
+
     globals.map.addLayer({
       id: 'cluster-count',
       type: 'symbol',
@@ -91,9 +123,10 @@ export const initPlotPoints = ({ globals } = {}) => {
       },
     });
 
-  }
+}
     
 export const addData = ({data, globals} = {}, increaseOffset)=>{
+  console.log(data)
   globals.map.getSource('trees').setData(data)
   increaseOffset()
 }

@@ -1,15 +1,16 @@
 <script>
 import {
   renderMap,
+  renderCDMap,
   initPlotPoints,
   addMapClick,
   addData,
-  recenterMap
+  recenterMap,
 } from "../controller/MapRender";
 import { useStore } from "vuex";
 import { computed, watch, onMounted, ref } from "vue";
 import cdCoordinates from "../controller/cdCoordinates";
-
+import cdMap from "../assets/nycd.json";
 
 export default {
   name: "Map",
@@ -36,7 +37,8 @@ export default {
     // hooks
     onMounted(() => renderMap({globals: mapGlobals.value}));
     watch(mapLoaded, ()=>{
-        store.dispatch("getTreeData");
+        store.dispatch('getTreeData');
+        renderCDMap({ globals: mapGlobals.value, cdMap: cdMap})
         initPlotPoints({globals: mapGlobals.value});
         addMapClick({globals: mapGlobals.value, setSideBarTrue: setSideBarTrue, toggleSideBar: toggleSideBar}, getActiveTreeData);
     })
