@@ -20,10 +20,7 @@ export default {
 <template>
   <div
     v-if="Object.keys(activeTree).length > 1"
-    :class="{
-      'w-1/4': sideBarActive,
-      'w-0': !sideBarActive,
-    }"
+    :class="{'w-1/4': sideBarActive, 'w-0': !sideBarActive}"
     class="transition-width duration-300 z-10 p-3"
   >
     <button v-show="sideBarActive" @click="closeSideBar" class="block mx-auto cursor-pointer border border-light-100 rounded-lg px-3 py-1">close sidebar</button>
