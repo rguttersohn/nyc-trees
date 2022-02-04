@@ -1,12 +1,25 @@
 <script>
+import { computed, watch, ref} from "vue";
+import {useStore} from 'vuex';
 export default {
-    methods:{
-        selectCommunityDistrict(event){
-            this.$store.commit('setActiveCommunityDistrict', event.target.value);
-            this.$store.commit('resetOffset');
-            this.$store.commit('emptyTreeData');
-            this.$store.dispatch('getTreeData');
+
+    setup(){
+        const select = ref(null);
+        const store = useStore();
+        const activeCommunityDistrict = computed(()=>store.state.activeCommunityDistrict);
+        const selectCommunityDistrict = (event)=>{
+            store.commit('setActiveCommunityDistrict', event.target.value);
+            store.commit('resetOffset');
+            store.commit('emptyTreeData');
+            store.dispatch('getTreeData');
         }
+
+        watch(activeCommunityDistrict, ()=>{
+            select.value.value = activeCommunityDistrict.value;
+        })
+
+        return { select, selectCommunityDistrict}
+
     }
 }
 </script>
@@ -14,7 +27,7 @@ export default {
 <template>
     <div class="absolute ml-10 mt-10 p-5 border-2 border-light-900">
        <h3>Filter by borough:</h3>
-       <select @change="selectCommunityDistrict" name="" id="">
+       <select ref="select" @change="selectCommunityDistrict" name="" id="">
            <optgroup label="Manhattan">
                <option value="101">Financial District/Battery Park City/Tribeca</option>
                <option value="102">Greenwich Village/Soho</option>
