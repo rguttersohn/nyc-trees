@@ -14,7 +14,7 @@ export default {
 
 <template>
     <div>
-        <p class="font-bold uppercase underline">Surrounding Area:</p>
+        <h3 class="font-bold">Surrounding Area:</h3>
         <p>Sidewalk Damage: <span>{{ activeTree.sidewalk }}</span></p>
         <p>Guards: <span>{{ activeTree.guards }}</span></p>
         <p>Curb Location: <span>{{ activeTree.curb_loc }}</span></p>

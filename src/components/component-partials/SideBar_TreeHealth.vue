@@ -1,6 +1,7 @@
 
 <script>
-import {useStore} from 'vuex'
+import {useStore} from 'vuex';
+import { computed } from 'vue';
 
     export default {
         Name:'TreeHealth',
@@ -8,12 +9,22 @@ import {useStore} from 'vuex'
 
             const store = useStore();
             const activeTree = store.state.activeTree;
-
-            return{activeTree}
+            const problems = computed(()=>activeTree.problems.split(','))
+            
+            return { activeTree, problems }
         }
     }
 </script>
 
 <template>
-    <p>{{activeTree.status}}</p>
+    <h3 class="font-bold">Vitals:</h3>
+    <p>Status: <span>{{activeTree.status}}</span></p>
+    <p v-show="activeTree.status === 'Alive'">Health: <span>{{activeTree.health}}</span></p>
+    <p v-show="activeTree.status === 'Alive' || activeTree.status === 'Dead' ">Trunk Diameter: <span>{{activeTree.tree_dbh}}</span> inches</p>
+    <p v-show="activeTree.status === 'Stump'">Stump Diameter: <span>{{activeTree.stump_diam}}</span> inches</p>
+    <p>Problems:</p>
+    <ul class="ml-5 list-disc">
+        <li v-for="(problem, index) in problems" :key="index">{{problem}}</li>
+    </ul>
+
 </template>
