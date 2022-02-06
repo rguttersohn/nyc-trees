@@ -9,7 +9,7 @@ import { computed } from 'vue';
 
             const store = useStore();
             const activeTree = store.state.activeTree;
-            const problems = computed(()=>activeTree.problems.split(','))
+            const problems = computed(()=> activeTree.problems ? activeTree.problems.split(',') : ['Not Recorded'])
             
             return { activeTree, problems }
         }

@@ -1,12 +1,15 @@
 
 <script>
 import { useStore } from 'vuex';
-import { computed } from 'vue';
-import TreeInfo from './component-partials/SideBar_TreeInfo.vue';
-import TreeSurroundingArea from './component-partials/SideBar_TreeSurroundingArea.vue';
-import TreeHealth from './component-partials/SideBar_TreeHealth.vue';
+import { computed, defineAsyncComponent } from 'vue';
+
+// import TreeHealth from './component-partials/SideBar_TreeHealth.vue';
 export default {
-  components:{TreeInfo, TreeHealth, TreeSurroundingArea},
+  components:{
+    TreeInfo: defineAsyncComponent(()=>import('./component-partials/SideBar_TreeInfo.vue')),
+    TreeHealth: defineAsyncComponent(()=> import('./component-partials/SideBar_TreeHealth.vue')), 
+    TreeSurroundingArea: defineAsyncComponent(()=>import('./component-partials/SideBar_TreeSurroundingArea.vue')),
+    },
   setup(){
     const store = useStore();
     const activeTree = computed(()=>store.state.activeTree);
@@ -34,6 +37,6 @@ export default {
     v-else
     v-show="sideBarActive"
   >
-    <p>Click a tree to display data</p>
+    <p>Loading ...</p>
   </div>
 </template>
