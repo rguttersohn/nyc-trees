@@ -143,7 +143,7 @@ export const initPlotPoints = ( globals, store) => {
       source: 'trees',
       filter: ['!', ['has', 'point_count']],
       paint: {
-        'circle-color': activeFilter.value ,
+        'circle-color': activeFilter.value.filterArray(),
         'circle-radius': 4,
       },
     });
@@ -166,8 +166,7 @@ export const initPlotPoints = ( globals, store) => {
 
 export const resetPaint = (globals, store) =>{
   const activeFilter = computed(()=>store.state.activeFilter);
-  console.log(activeFilter.value);
-  globals.map.setPaintProperty('unclustered-trees','circle-color', activeFilter.value)
+  globals.map.setPaintProperty('unclustered-trees','circle-color', activeFilter.value.filterArray())
 }
     
 export const addData = (data, globals, store)=>{

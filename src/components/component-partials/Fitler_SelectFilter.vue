@@ -6,7 +6,6 @@ export default {
         const store = useStore();
         const setActiveFilter = (value)=>store.commit('setActiveFilter', value)
         const radioClick = (event)=> {
-            console.log("value",event.target.value);
             setActiveFilter(event.target.value);
             };
 
@@ -17,8 +16,9 @@ export default {
 </script>
 
 <template>
-    <div class="bg-light flex justify-evenly items-center">
-        <input @click="radioClick" name="tree-filter" type="radio" value="status" id="">
+<h3 class="mt-5">Change filter:</h3>
+    <div class="my-3 flex justify-evenly items-center bg-light">
+        <input @click="radioClick" name="tree-filter" type="radio" value="status" checked="checked">
         <label for="status">Tree Status</label>
         <input @click="radioClick" name="tree-filter" type="radio" value="health">
         <label for="tree-health">Tree Health</label>

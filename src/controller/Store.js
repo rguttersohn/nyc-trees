@@ -18,7 +18,7 @@ const store = createStore({
                 {
                     filterName:'status',
                     colors:['green', 'coral', 'red'],
-                    keys:['Alive', 'Dead', 'Stump','Dead/Stump'],
+                    keys:['Alive', 'Dead', 'Stump'],
                     filterArray(){ return [ 
                         'match',
                         ['get', this.filterName],
@@ -34,8 +34,8 @@ const store = createStore({
                 },
                 {
                     filterName: 'health',
-                    colors: ['purple','blue','orange'],
-                    keys: ['Good', 'Fair', 'Poor'],
+                    colors: ['purple','blue','orange','gray'],
+                    keys: ['Good', 'Fair', 'Poor','Dead'],
                     filterArray(){ return [ 
                         'match',
                         ['get', this.filterName],
@@ -45,22 +45,12 @@ const store = createStore({
                         this.colors[1],
                         this.keys[2],
                         this.colors[2],
-                        'gray'
+                        this.colors[3]
                     ] 
                 }
             }
             ],
-            activeFilter: [ 
-                'match',
-                ['get', 'status'],
-                'Alive',
-                'green',
-                'Dead',
-                'coral',
-                'Stump',
-                'red',
-                'gray'
-            ]   
+            activeFilter:[], 
         }
     },
     mutations: {
@@ -100,11 +90,10 @@ const store = createStore({
         setActiveFilter(state, value){
             state.filters.forEach(filter => {
                 if(filter.filterName === value){
-                    state.activeFilter = filter.filterArray()
+                    state.activeFilter = filter;
                 }
             })
-        }
-        
+        },        
     },
     actions:{
         getTreeData ({state, commit}){

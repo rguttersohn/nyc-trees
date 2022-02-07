@@ -1,10 +1,19 @@
 <script>
+import { onMounted } from "vue";
+import {useStore} from 'vuex';
+import store from "../controller/Store";
 import SelectCD from "./component-partials/Filter_SelectCD.vue";
 import FilterLegend from "./component-partials/Fitler_FilterLegend.vue";
 import SelectFilter from "./component-partials/Fitler_SelectFilter.vue";
 
 export default {
-    components: {SelectCD, SelectFilter, FilterLegend}
+    components: {SelectCD, SelectFilter, FilterLegend},
+    setup(){
+        const store = useStore();
+        onMounted(()=>{
+            store.getters.defaultFilter;
+        })
+    }
 }
 </script>
 

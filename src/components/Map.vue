@@ -25,6 +25,8 @@ export default {
     const mapLoaded = computed(() => mapGlobals.value.loaded);
     const activeFilter = computed(()=>store.state.activeFilter);
 
+    const setActiveFilter = (value)=>store.commit('setActiveFilter', value);
+
     // component data
     const mapGlobals = ref({
       map: "",
@@ -37,6 +39,7 @@ export default {
         store.dispatch('getTreeData');
         renderCDMap(mapGlobals.value, store)
         addCDEvents(mapGlobals.value, store)
+        setActiveFilter('status');
         initPlotPoints(mapGlobals.value, store);
         addPlotPointEvents(mapGlobals.value, store);
     })
