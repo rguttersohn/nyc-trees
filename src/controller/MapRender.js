@@ -1,7 +1,6 @@
 import mapboxgl from 'mapbox-gl';
 import vault from '../../vault.js';
 import { computed } from 'vue';
-import store from './Store.js';
 
 export const renderMap = ( globals ) => {
   mapboxgl.accessToken = vault.mapBoxToken;
@@ -95,8 +94,8 @@ export const refilterCDMap = (globals, store) =>{
       )
 } 
 
-export const initPlotPoints = ( globals ) => {
-    
+export const initPlotPoints = ( globals, store) => {
+    const activeFilter = computed(()=> store.state.activeFilter)
     globals.map.addSource('trees', {
       type: 'geojson',
       data: {},
@@ -144,17 +143,7 @@ export const initPlotPoints = ( globals ) => {
       source: 'trees',
       filter: ['!', ['has', 'point_count']],
       paint: {
-        'circle-color': [
-          'match',
-          ['get', 'status'],
-          'Alive',
-          'green',
-          'Dead',
-          'coral',
-          'Stump',
-          'red',
-          'gray'
-        ],
+        'circle-color': activeFilter.value ,
         'circle-radius': 4,
       },
     });
@@ -173,6 +162,12 @@ export const initPlotPoints = ( globals ) => {
       },
     });
 
+}
+
+export const resetPaint = (globals, store) =>{
+  const activeFilter = computed(()=>store.state.activeFilter);
+  console.log(activeFilter.value);
+  globals.map.setPaintProperty('unclustered-trees','circle-color', activeFilter.value)
 }
     
 export const addData = (data, globals, store)=>{

@@ -7,7 +7,8 @@ import {
   addData,
   recenterMap,
   addCDEvents,
-  refilterCDMap
+  refilterCDMap,
+  resetPaint
 } from "../controller/MapRender";
 import { useStore } from "vuex";
 import { computed, watch, onMounted, ref } from "vue";
@@ -22,6 +23,7 @@ export default {
     const currentOffset = computed(()=> store.state.currentOffset);
     const activeCommunityDistrict = computed(()=> store.state.activeCommunityDistrict);
     const mapLoaded = computed(() => mapGlobals.value.loaded);
+    const activeFilter = computed(()=>store.state.activeFilter);
 
     // component data
     const mapGlobals = ref({
@@ -35,7 +37,7 @@ export default {
         store.dispatch('getTreeData');
         renderCDMap(mapGlobals.value, store)
         addCDEvents(mapGlobals.value, store)
-        initPlotPoints(mapGlobals.value);
+        initPlotPoints(mapGlobals.value, store);
         addPlotPointEvents(mapGlobals.value, store);
     })
     watch(treeData, () => {
@@ -48,6 +50,10 @@ export default {
     watch(activeCommunityDistrict, () => {
       refilterCDMap(mapGlobals.value, store)
       recenterMap( mapGlobals.value, cdCoordinates[`${activeCommunityDistrict.value}`])
+    })
+
+    watch(activeFilter, ()=>{
+      resetPaint(mapGlobals.value, store)
     })
 
   },

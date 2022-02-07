@@ -13,7 +13,54 @@ const store = createStore({
             },
             currentOffset: 0,
             activeTree:{activeTreeID: 0},
-            sideBarActive: false,         
+            sideBarActive: false, 
+            filters :[
+                {
+                    filterName:'status',
+                    colors:['green', 'coral', 'red'],
+                    keys:['Alive', 'Dead', 'Stump','Dead/Stump'],
+                    filterArray(){ return [ 
+                        'match',
+                        ['get', this.filterName],
+                        this.keys[0],
+                        this.colors[0],
+                        this.keys[1],
+                        this.colors[1],
+                        this.keys[2],
+                        this.colors[2],
+                        'gray'
+                    ] 
+                    }
+                },
+                {
+                    filterName: 'health',
+                    colors: ['purple','blue','orange'],
+                    keys: ['Good', 'Fair', 'Poor'],
+                    filterArray(){ return [ 
+                        'match',
+                        ['get', this.filterName],
+                        this.keys[0],
+                        this.colors[0],
+                        this.keys[1],
+                        this.colors[1],
+                        this.keys[2],
+                        this.colors[2],
+                        'gray'
+                    ] 
+                }
+            }
+            ],
+            activeFilter: [ 
+                'match',
+                ['get', 'status'],
+                'Alive',
+                'green',
+                'Dead',
+                'coral',
+                'Stump',
+                'red',
+                'gray'
+            ]   
         }
     },
     mutations: {
@@ -49,12 +96,19 @@ const store = createStore({
         },
         setActiveTree(state, fetchedTreeData){
             Object.assign(state.activeTree, fetchedTreeData)
+        },
+        setActiveFilter(state, value){
+            state.filters.forEach(filter => {
+                if(filter.filterName === value){
+                    state.activeFilter = filter.filterArray()
+                }
+            })
         }
         
     },
     actions:{
         getTreeData ({state, commit}){
-            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=20000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status&cb_num=${state.activeCommunityDistrict}`)
+            fetch(`https://data.cityofnewyork.us/resource/uvpi-gqnh.geojson?$$app_token=${apiToken}&$limit=20000&$offset=${state.currentOffset}&$select=tree_id,longitude,latitude,status,health&cb_num=${state.activeCommunityDistrict}`)
             .then(response=> response.json())
             .then(fetchedData => {
                 for(let i = 0 ; i < fetchedData.features.length; i++){
