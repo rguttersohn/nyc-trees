@@ -9,6 +9,7 @@ export default {
     TreeInfo: defineAsyncComponent(()=>import('./component-partials/SideBar_TreeInfo.vue')),
     TreeHealth: defineAsyncComponent(()=> import('./component-partials/SideBar_TreeHealth.vue')), 
     TreeSurroundingArea: defineAsyncComponent(()=>import('./component-partials/SideBar_TreeSurroundingArea.vue')),
+    CDData: defineAsyncComponent(()=>import('./component-partials/SideBar_CDData.vue'))
     },
   setup(){
     const store = useStore();
@@ -31,6 +32,9 @@ export default {
       <TreeInfo />
       <TreeHealth />
       <TreeSurroundingArea />
+    </div>
+    <div>
+      <CDData/>
     </div>
   </div>
   <div
